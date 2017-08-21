@@ -3,9 +3,9 @@
    <remote name="github"
            fetch="git://github.com" />
 
-   <project name="caseykelso/fx2-reference-firmware"         remote="github"      path="firmware"  revision="master" />
-   <project name="caseykelso/ti-cdk-fx2"                     remote="github"      path="."         revision="master" />
-   <project name="caseykelso/sdcc"                           remote="github"      path="sdcc"      revision="refs/tags/sdcc-3.6.0" />
+   <project name="DensityCo/fx2-reference-firmware"          remote="github"      path="firmware"  revision="master" />
+   <project name="DensityCo/ti-cdk-fx2"                      remote="github"      path="."         revision="master" />
+   <project name="DensityCo/sdcc"                            remote="github"      path="sdcc"      revision="refs/tags/sdcc-3.6.0" />
    <project name="caseykelso/hex2bix"                        remote="github"      path="hex2bix"   revision="master" />
    <project name="djmuhlestein/fx2lib"                       remote="github"      path="fx2lib"    revision="master" />
    <project name="docopt/docopt.cpp"                         remote="github"      path="docopt"    clone-depth="1" revision="master" />

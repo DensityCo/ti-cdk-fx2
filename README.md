@@ -8,7 +8,7 @@ sudo apt-get install build-essential repo ant git libboost-graph-dev libusb-1.0-
 
 # Get the source
 ```bash
-repo init -m fx2cdk.xml -u git://github.com/caseykelso/ti-cdk-fx2.git
+repo init -m fx2cdk.xml -u git://github.com/DensityCo/ti-cdk-fx2.git
 repo sync
 ```
 
