@@ -22,6 +22,5 @@ ant bootstrap
 ant build
 ```
 
-The reference fx2lib build artifact lives in fx2lib/fw/build.
 
 
