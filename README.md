@@ -6,6 +6,9 @@ TI CDK FX2 Firmware - top level project
 sudo apt-get install build-essential repo ant git libboost-graph-dev libusb-1.0-0-dev
 ```
 
+# Setup Environment (OSX)
+TBD
+
 # Get the source
 ```bash
 repo init -m fx2cdk.xml -u git://github.com/DensityCo/ti-cdk-fx2.git
