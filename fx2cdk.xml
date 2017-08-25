@@ -6,7 +6,7 @@
    <remote name="githubssh"
            fetch="ssh://git@github.com" />
 
-
+   <default remote="githubssh" sync-j="8" />
 
    <project name="DensityCo/fx2-reference-firmware"          remote="githubssh"   path="firmware"  revision="master" upstream="master" />
    <project name="DensityCo/ti-cdk-fx2"                      remote="githubssh"   path="."         revision="master" upstream="master" />
