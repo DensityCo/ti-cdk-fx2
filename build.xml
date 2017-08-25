@@ -114,6 +114,7 @@
   <env key="OUT_DIR"     value="${firmware.build.dir}" />
 </exec>
 -->
+
 <exec executable="make" dir="${firmware.source.dir}">
   <env key="PATH"        value="${env.PATH}:${sdcc.install.dir}/bin" />
   <env key="FX2_DIR"     value="${target.installed}" />
@@ -125,6 +126,10 @@
   <arg value="all" />
 </exec>
 
+
+</target>
+
+<target name="convert" >
 <exec executable="python" dir="${target.installed}/bin">
   <arg value="${fx2lib.source.dir}/utils/ihx2iic.py" />
   <arg value="--vid=0451" />
@@ -133,10 +138,7 @@
   <arg value="${firmware.source.dir}/release/fx2_main.ihx" />
   <arg value="${target.installed}/bin/fx2_main.iic" />
 </exec>
-
 </target>
-
-
 
 <!--
 <target name="firmware">
