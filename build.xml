@@ -115,7 +115,7 @@
 </exec>
 -->
 
-<exec executable="make" dir="${firmware.source.dir}">
+<exec executable="make" dir="${firmware.source.dir}" failonerror="true">
   <env key="PATH"        value="${env.PATH}:${sdcc.install.dir}/bin" />
   <env key="FX2_DIR"     value="${target.installed}" />
   <env key="PROJ_DIR"    value="${firmware.source.dir}" />
@@ -130,7 +130,7 @@
 </target>
 
 <target name="convert" >
-<exec executable="python" dir="${target.installed}/bin">
+<exec executable="python" dir="${target.installed}/bin" failonerror="true">
   <arg value="${fx2lib.source.dir}/utils/ihx2iic.py" />
   <arg value="--vid=0451" />
   <arg value="--pid=9105" />
