@@ -130,12 +130,16 @@
 </target>
 
 <target name="convert" >
+
+<delete dir="${target.installed}/bin" />
+<mkdir  dir="${target.installed}/bin" />
+
 <exec executable="python" dir="${target.installed}/bin" failonerror="true">
   <arg value="${fx2lib.source.dir}/utils/ihx2iic.py" />
   <arg value="--vid=0451" />
   <arg value="--pid=9105" />
   <arg value="--configbyte=0" />
-  <arg value="${firmware.source.dir}/release/fx2_main.ihx" />
+  <arg value="${firmware.build.dir}/fx2_main.ihx" />
   <arg value="${target.installed}/bin/fx2_main.iic" />
 </exec>
 </target>
