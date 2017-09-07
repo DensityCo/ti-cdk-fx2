@@ -14,6 +14,8 @@
 <property name="hex2bix.build"         value="${basedir}/build.hex2bix" />
 <property name="docopt.build"          value="${basedir}/build.docopt" />
 <property name="docopt.dir"            value="${basedir}/docopt" />
+<property name="cycfx2.source.dir"     value="${basedir}/cycfx2prog-0.47" />
+<property name="cycfx2.install.dir"    value="${host.installed}/bin" />
 
 
 <property environment="env" />
@@ -141,6 +143,37 @@
   <arg value="--configbyte=0" />
   <arg value="${firmware.build.dir}/fx2_main.ihx" />
   <arg value="${target.installed}/bin/fx2_main.iic" />
+</exec>
+</target>
+
+<target name="build_loader" >
+
+<exec executable="make" dir="${cycfx2.source.dir}" failonerror="true">
+  <env key="VERBOSE"     value="1" />
+  <arg value="clean" />
+</exec>
+
+<exec executable="make" dir="${cycfx2.source.dir}" failonerror="true">
+  <env key="VERBOSE"     value="1" />
+</exec>
+
+<exec executable="mkdir" dir="${cycfx2.source.dir}" failonerror="true">
+  <arg value="-p" />
+  <arg value="${cycfx2.install.dir}" />
+</exec>
+
+<exec executable="cp" dir="${cycfx2.source.dir}" failonerror="true">
+  <arg value="cycfx2prog" />
+  <arg value="${cycfx2.install.dir}" />
+</exec>
+</target>
+
+<target name="load" >
+
+<exec executable="sudo" dir="${firmware.build.dir}" failonerror="true">
+  <arg value="${cycfx2.install.dir}/cycfx2prog" />
+  <arg value="prg:fx2_main.ihx" />
+  <arg value="run" />
 </exec>
 </target>
 
