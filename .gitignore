@@ -14,3 +14,7 @@ build.hex2bix/
 target.installed/
 fx2tools/
 build.firmware/
+cycfx2prog-0.47/cycfx2dev.o
+cycfx2prog-0.47/cycfx2prog
+cycfx2prog-0.47/cycfx2prog.o
+

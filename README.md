@@ -6,6 +6,18 @@ TI CDK FX2 Firmware - top level project
 sudo apt-get install build-essential repo ant git bison flex gputils texinfo cmake libboost-graph-dev libusb-1.0-0-dev libusb-dev
 ```
 
+# Setup Udev Rules
+Create file /etc/udev/rules.d and add contents:
+```bash
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", MODE="0664", GROUP="plugdev"
+```
+
+Add your user to plugdev and restart udev.
+```bash
+sudo adduser $USER plugdev
+sudo service udev restart
+```
+
 # Setup Environment (OSX)
 TBD
 
@@ -31,7 +43,7 @@ ant build_loader
 ```
 
 # Load the Firmware Onto FX2 Development Kit
-Note that this step requires sudo access.
+Note that this step requires updated udev rules.
 ```bash
 ant load
 ```
