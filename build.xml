@@ -170,8 +170,7 @@
 
 <target name="load" >
 
-<exec executable="sudo" dir="${firmware.build.dir}" failonerror="true">
-  <arg value="${cycfx2.install.dir}/cycfx2prog" />
+<exec executable="${cycfx2.install.dir}/cycfx2prog" dir="${firmware.build.dir}" failonerror="true">
   <arg value="prg:fx2_main.ihx" />
   <arg value="run" />
 </exec>
