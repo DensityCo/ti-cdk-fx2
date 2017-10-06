@@ -1,0 +1,11 @@
+The original cycfx2prog program has been modified by Density to include the ability
+to update the OPT9221 TI part co-located on the TI TOF CDK. These modififcations include...
+
+Adding the ctrlw command, which sends a one byte control write command.
+
+Adding the ctrlr command which send a control read command.
+
+Adding prg9221 command, which programs and verifies the 9221's attached EEPROM.
+
+Adding the read9221 command, which reads the contents of the 9221 EEPROM.
+
