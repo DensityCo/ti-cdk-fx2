@@ -1,4 +1,5 @@
 <project name="cdkfx2" basedir="." default="build" >
+<property name="version"               value="0.0.0" />
 <property name="host.installed"        value="${basedir}/host.installed" />
 <property name="target.installed"      value="${basedir}/target.installed" />
 <property name="sdcc.source.dir"       value="${basedir}/sdcc" />
@@ -176,6 +177,16 @@
 </exec>
 </target>
 
+<target name="package" >
+
+<exec executable="tar" dir="${firmware.build.dir}" failonerror="true">
+  <arg value="-czf" />
+  <arg value="fx2_firmware_v${version}.tar.gz" />
+  <arg value="fx2_firmware_v${version}.ihx" />
+</exec>
+</target>
+
+
 <!--
 <target name="firmware">
 <exec executable="make" dir="${firmware.source.dir}">
@@ -188,6 +199,10 @@
 </target>
 
 <target name="build" depends="firmware">
+<exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
+  <arg value="fx2_main.ihx" />
+  <arg value="fx2_firmware_v${version}.ihx" />
+</exec>
 </target>
 
 
