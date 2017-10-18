@@ -18,8 +18,8 @@
 <property name="cycfx2.source.dir"     value="${basedir}/cycfx2prog-0.47" />
 <property name="cycfx2.install.dir"    value="${host.installed}/bin" />
 
-
-<property environment="env" />
+<property environment="env"/>
+<property name="env.BUILD_NUMBER" value="dev"/>
 
 <target name="clean">
 <delete dir="${host.installed}" />
@@ -181,8 +181,8 @@
 
 <exec executable="tar" dir="${firmware.build.dir}" failonerror="true">
   <arg value="-czf" />
-  <arg value="fx2_firmware_v${version}.tar.gz" />
-  <arg value="fx2_firmware_v${version}.ihx" />
+  <arg value="fx2_firmware_v${version}_B${env.BUILD_NUMBER}.tar.gz" />
+  <arg value="fx2_firmware_v${version}_B${env.BUILD_NUMBER}.ihx" />
 </exec>
 </target>
 
@@ -201,7 +201,7 @@
 <target name="build" depends="firmware">
 <exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
   <arg value="fx2_main.ihx" />
-  <arg value="fx2_firmware_v${version}.ihx" />
+  <arg value="fx2_firmware_v${version}_B${env.BUILD_NUMBER}.ihx" />
 </exec>
 </target>
 
