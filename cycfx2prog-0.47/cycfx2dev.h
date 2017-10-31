@@ -62,6 +62,10 @@ class CypressFX2Device
 		int ProgramStaticIHex(const char **ihex);
 		// Read a flat binary file and download it. 
 		int ProgramBinFile(const char *path,size_t start_addr=0);
+                // Program a flat binary file to the OPT9221 eeprom
+                int ProgramOpt9221BinFile(const char *path);
+                // Read number of bytes from the OPT9221 eeprom. mode indicates binary, or text output
+                int ReadProgramOpt9221(const char *path, unsigned int bytes, int mode);
 		// Download/write a chunk of ram into the device. 
 		int WriteRAM(size_t addr,const unsigned char *data,size_t nbytes);
 		// Read a portion of ram from the device. 
@@ -98,6 +102,16 @@ class CypressFX2Device
 		int CtrlMsg(unsigned char requesttype,
 			unsigned char request,int value,int index,
 			const unsigned char *ctl_buf=NULL,size_t ctl_buf_size=0);
+
+                // Send a USB control message write with data
+                int CtrlMsgW(unsigned char requesttype,
+                        unsigned char request,int value,int index,
+                        const unsigned char *ctl_buf,size_t ctl_buf_size);
+
+                // Send a USB control message with read data
+                int CtrlMsgR(unsigned char requesttype,
+                        unsigned char request,int value,int index,
+                        const unsigned char *ctl_buf,size_t ctl_buf_size);
 };
 
 #endif  /* _CYCFX2PROG_CYCFX2DEVICE_ */

@@ -9,3 +9,31 @@ Adding prg9221 command, which programs and verifies the 9221's attached EEPROM.
 
 Adding the read9221 command, which reads the contents of the 9221 EEPROM.
 
+Example commands
+# RAM loading a FX2 eeprom booted device
+sudo ./cycfx2prog -d=001.092 reset prg:../build.firmware/fx2_main.ihx run
+
+# write eeprom init config
+sudo ./cycfx2prog -d=001.029 ctrlw:0x40,0x17,0,0,0x06
+
+# read the JEDIC ID of the EEPROM
+sudo ./cycfx2prog -d=001.029 ctrlr:0xC0,0x1D,0,0,3
+
+# read the eeprom status, which should return a 0
+sudo ./cycfx2prog -d=001.029 ctrlr:0xC0,0x1B,0,0,1
+
+# read the first 64 bytes of the eeprom
+sudo ./cycfx2prog -d=001.029 ctrlr:0xC0,0x19,0,0,0x40
+
+# set the eeprom to write enabled
+sudo ./cycfx2prog -d=001.029 ctrlw:0x40,0x1E,0,0,0x06
+
+# check the write enable status, should return a 0x02
+sudo ./cycfx2prog -d=001.029 ctrlr:0xC0,0x1B,0,0,1
+
+# Erase the eeprom
+sudo ./cycfx2prog -d=001.029 ctrlw:0x40,0x1E,0,0,0xC7
+
+# Program the 9221 eeprom
+sudo ./cycfx2prog -d=001.029 prg9221:/home/cfisher/density/emb.opt9221firmware/firmware/OPT9221_Fw_0v29/OPT9221_0v29.tie
+

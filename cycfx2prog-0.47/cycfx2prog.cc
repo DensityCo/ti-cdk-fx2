@@ -152,6 +152,8 @@ static void PrintHelp()
 		"  reset          reset 8051 by putting reset low\n"
 		"  run            start the 8051 by putting reset high\n"
 		"  prg:FILE       program 8051; FILE is an Intel hex file (.ihx); will\n"
+                "  prg9221:FILE   program the OPT9221's EEPROM with a .tie birary file"
+                "  read9221:BYTES,MODE,FILE read number of bytes from the OPT9221 EEPROM and store in file as binary, or text"
 		"                 reset the 8051 before download; use \"run\" afterwards\n"
 		"  delay:NN       make a delay for NN msec\n"
 		"  set:ADR,VAL    set byte at address ADR to value VAL\n"
@@ -165,6 +167,8 @@ static void PrintHelp()
 		"                 NOTE: This uses libusb and is slow on the host side!\n"
 		"  altif:[IF]     set alt interface for next bulk IO; none for FX2 default\n"
 		"  ctrl:TYPE,REQUEST[,VALUE[,INDEX]] send a zero-length control message\n"
+                "  ctrlw:TYPE,REQUEST[,VALUE[,INDEX]],BYTE send a one byte control message\n"
+                "  ctrlr:TYPE,REQUEST[,VALUE[,INDEX]],LENGHT send a control message and receive data\n"
 		"Cypress FX2(LP) programmer tool v%s copyright (c) 2006--2009 by Wolfgang Wieser\n"
 		,CYCFX2PROG_VERSION);
 }
@@ -327,6 +331,38 @@ int main(int argc,char **arg)
 				errors+=cycfx2.ProgramIHexFile(file);
 			}
 		}
+                else if(!strcmp(cmd,"prg9221"))
+                {
+                        const char *file=a[0];
+                        if(!file)
+                        {  fprintf(stderr,"Command \"prg9221\" requires file to download.\n");
+                                ++errors;  }
+                        else
+                        {
+                                fprintf(stderr,"Programming the OPT9221 using \"%s\".\n",file);
+                                errors+=cycfx2.ProgramOpt9221BinFile(file);
+                        }
+                }
+                else if(!strcmp(cmd,"read9221"))
+                {
+                        long bytes = 0; // number of bytes to read from eeprom.
+                        int mode = 0; // 0 indicates binary output mode.
+
+                        if(a[0] && *a[0])  {  bytes=strtol(a[0],NULL,0);  }
+                        if(a[1] && *a[1])  {  mode=strtol(a[1],NULL,0);  }
+                        const char *file=a[2];
+
+                        if((file!=NULL) && (bytes > 0) && (mode >= 0) && (mode < 4))
+                        {
+                            fprintf(stderr,"Reading %ld bytes mode %d from the OPT9221 eeprom and placing in file %s\n",bytes, mode,file);
+                            errors+=cycfx2.ReadProgramOpt9221(file, bytes, mode);
+                        }
+                        else
+                        {
+                            fprintf(stderr,"Error - Bad command parameter\n");
+                            ++errors;
+                        }
+                }
 		else if(!strcmp(cmd,"delay"))
 		{
 			long delay=-1;
@@ -513,6 +549,46 @@ int main(int argc,char **arg)
 				requesttype,request,value,index);
 			errors+=cycfx2.CtrlMsg(requesttype,request,value,index);
 		}
+                else if(!strcmp(cmd,"ctrlw"))
+                {
+                        int requesttype=0,request=0;
+                        int value=0,index=0;
+                        unsigned char byte[2]={0,0};
+                        if(a[0] && *a[0]) requesttype=strtol(a[0],NULL,0);
+                        if(a[1] && *a[1]) request=strtol(a[1],NULL,0);
+                        if(a[2] && *a[2]) value=strtol(a[2],NULL,0);
+                        if(a[3] && *a[3]) index=strtol(a[3],NULL,0);
+                        if(a[4] && *a[4]) byte[0]=(char)strtol(a[4],NULL,0);
+                        fprintf(stderr,"Sending control message type 0x%02x, request "
+                                "0x%02x (value=%d,index=%d), data =0x%02x\n",
+                                requesttype,request,value,index, byte[0]);
+                        errors+=cycfx2.CtrlMsgW(requesttype,request,value,index,byte,1);
+                }
+                else if(!strcmp(cmd,"ctrlr"))
+                {
+                        int requesttype=0,request=0;
+                        int value=0,index=0, length=0;
+                        unsigned char byte[256];
+                        for(int x = 0; x < 256; x++)
+                            byte[x]=0xAA;
+
+
+                        if(a[0] && *a[0]) requesttype=strtol(a[0],NULL,0);
+                        if(a[1] && *a[1]) request=strtol(a[1],NULL,0);
+                        if(a[2] && *a[2]) value=strtol(a[2],NULL,0);
+                        if(a[3] && *a[3]) index=strtol(a[3],NULL,0);
+                        if(a[4] && *a[4]) length=strtol(a[4],NULL,0);
+                        fprintf(stderr,"Sending control message type 0x%02x, request "
+                                "0x%02x (value=%d,index=%d, length=%d)",
+                                requesttype,request,value,index, length);
+                        errors+=cycfx2.CtrlMsgR(requesttype,request,value,index,byte,length);
+                        fprintf(stderr," data =");
+                        for(int x = 0; x < length; x++)
+                        {
+                            fprintf(stderr,"0x%02x ", byte[x]);
+                        }
+                        fprintf(stderr,"\n");
+                }
 		else
 		{
 			fprintf(stderr,"Ignoring unknown command \"%s\".\n",cmd);
