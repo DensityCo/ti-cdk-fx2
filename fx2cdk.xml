@@ -2,7 +2,7 @@
 <manifest>
 
    <remote name="intranet"
-           fetch="git://developer.intra2net.com/libftdi" />
+           fetch="git://developer.intra2net.com" />
 
    <remote name="github"
            fetch="git://github.com" />
