@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+
+   <remote name="intranet"
+           fetch="git://developer.intra2net.com/libftdi" />
+
    <remote name="github"
            fetch="git://github.com" />
 
@@ -17,4 +21,5 @@
    <project name="djmuhlestein/fx2lib"                       remote="github"      path="fx2lib"    revision="master" />
    <project name="docopt/docopt.cpp"                         remote="github"      path="docopt"    clone-depth="1" revision="master" />
    <project name="makestuff/fx2tools"                        remote="github"      path="fx2tools"  revision="master" /> 
+   <project name="libftdi"                                   remote="intranet"    path="libftdi"   revision="master" />
 </manifest>
