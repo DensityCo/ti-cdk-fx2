@@ -20,6 +20,7 @@
 
 <property environment="env"/>
 <property name="env.BUILD_NUMBER" value="dev"/>
+<property name="env.LASER_ON"    value="0" />
 
 <target name="clean">
 <delete dir="${host.installed}" />
@@ -126,6 +127,7 @@
   <env key="OUT_DIR"     value="${firmware.build.dir}" />
   <env key="HEX2BIX"     value="${hex2bix.bin}" />
   <env key="VERBOSE"     value="1" />
+  <env key="LASER_ON"     value="${env.LASER_ON}" />
   <arg value="all" />
 </exec>
 
@@ -201,12 +203,8 @@
 <target name="build" depends="firmware">
 <exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
   <arg value="fx2_main.ihx" />
-  <arg value="fx2_firmware_v${version}_B${env.BUILD_NUMBER}.ihx" />
+  <arg value="fx2_firmware_v${version}_L${env.LASER_ON}_B${env.BUILD_NUMBER}.ihx" />
 </exec>
 </target>
-
-
-
-
 
 </project>
