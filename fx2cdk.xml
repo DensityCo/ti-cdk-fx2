@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+
+   <remote name="intranet"
+           fetch="git://developer.intra2net.com" />
+
    <remote name="github"
            fetch="git://github.com" />
 
@@ -8,6 +12,8 @@
 
    <default remote="githubssh" sync-j="8" />
 
+<project name="DensityCo/emb.prebuilt.fx2"             remote="githubssh"   path="prebuilts/fx2" revision="master" upstream="master" />
+   <project name="DensityCo/emb.prebuilt.opt9221firmware"             remote="githubssh"   path="prebuilts/9221" revision="master" upstream="master" />
    <project name="DensityCo/fx2-reference-firmware"          remote="githubssh"   path="firmware"  revision="master" upstream="master" />
    <project name="DensityCo/ti-cdk-fx2"                      remote="githubssh"   path="."         revision="master" upstream="master" />
    <project name="DensityCo/sdcc"                            remote="github"      path="sdcc"      revision="refs/tags/sdcc-3.6.0" />
@@ -15,4 +21,5 @@
    <project name="djmuhlestein/fx2lib"                       remote="github"      path="fx2lib"    revision="master" />
    <project name="docopt/docopt.cpp"                         remote="github"      path="docopt"    clone-depth="1" revision="master" />
    <project name="makestuff/fx2tools"                        remote="github"      path="fx2tools"  revision="master" /> 
+   <project name="libftdi"                                   remote="intranet"    path="libftdi"   revision="master" />
 </manifest>
