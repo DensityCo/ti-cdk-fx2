@@ -23,4 +23,5 @@ libftdi/
 build.eeprom/
 eeprom/
 build.ftdi_eeprom/
-
+gettext/
+libconfuse/
