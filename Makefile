@@ -22,6 +22,8 @@ SDCC.INSTALLED=$(HOST.INSTALLED)/sdcc
 SRC.SDCC=$(BASE.DIR)/sdcc
 SRC.FX2LIB=$(BASE.DIR)/fx2lib
 TARGET.INSTALLED=$(BASE.DIR)/target.installed
+SRC.GETTEXT=$(BASE.DIR)/gettext
+SRC.LIBCONFUSE=$(BASE.DIR)/libconfuse
 
 #bootstrap: sdcc docopt hex2bix fx2lib
 
@@ -42,6 +44,13 @@ flash.fx2.ti17: .FORCE
 
 flash.fx2.density: .FORCE
 	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 reset prg:$(FIRMWARE.BIN) run
+
+gettext: .FORCE
+	cd $(SRC.GETTEXT) && ./autogen.sh && ./configure --disable-java --prefix=$(HOST.INSTALLED) && make -j8 install
+
+libconfuse: .FORCE
+	cd $(SRC.LIBCONFUSE) && ./autogen.sh && ./configure --prefix=$(HOST.INSTALLED) && make -j8 install
+
 
 libftdi: .FORCE
 	rm -rf $(BUILD.LIBFTDI) && mkdir $(BUILD.LIBFTDI) && cd $(BUILD.LIBFTDI) && $(CMAKE.BIN) $(SRC.LIBFTDI) -DCMAKE_INSTALL_PREFIX=$(HOST.INSTALLED) -DBUILD_TESTS=OFF -DDOCUMENTATION=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INCLUDE_PATH=$(HOST.INSTALLED)/include -DCMAKE_CROSSCOMPILING=ON -DLIBFTDI_ROOT_DIR=$(HOST.INSTALLED) -DCMAKE_LIBRARY_PATH=$(HOST.INSTALLED)/lib  && make install

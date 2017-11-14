@@ -39,8 +39,8 @@
 #include <sys/stat.h>
 
 #include <confuse.h>
-#include <libusb.h>
-#include <ftdi.h>
+#include "libusb-1.0/libusb.h"
+#include "libftdi1/ftdi.h"
 #include <ftdi_eeprom_version.h>
 
 static int parse_cbus(cfg_t *cfg, cfg_opt_t *opt, const char *value, void *result)
