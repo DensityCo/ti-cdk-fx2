@@ -27,5 +27,5 @@
    <project name="libftdi"                                   remote="intranet"    path="libftdi"   revision="master" />
    <project name="martinh/libconfuse"                        remote="github"      path="libconfuse" revision="refs/tags/v3.2.1" />
    <project name="git/gettext.git"                           remote="gnu"         path="gettext"    revision="master" />
-
+   <project name="libusb/libusb"                             remote="github"      path="libusb"    revision="refs/tags/v1.0.21" />
 </manifest>
