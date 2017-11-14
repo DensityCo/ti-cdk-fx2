@@ -46,7 +46,7 @@ option(FTDI_EEPROM "Build ftdi_eeprom" ON)
   )
 
   add_executable ( ftdi_eeprom main.c )
-  target_link_libraries ( ftdi_eeprom ftdi1 ${CONFUSE_LIBRARIES} )
+  target_link_libraries ( ftdi_eeprom ftdi1 usb-1.0 confuse ${CONFUSE_LIBRARIES} )
 #  if ( LIBINTL_FOUND )
 #    target_link_libraries ( ftdi_eeprom ${LIBINTL_LIBRARIES} )
 #  endif ()

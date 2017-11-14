@@ -14,6 +14,8 @@ BIN.DIR=$(HOST.INSTALLED)/bin
 SRC.EEPROM=$(BASE.DIR)/eeprom
 BUILD.EEPROM=$(BUILD.PREFIX).eeprom
 EEPROM.BIN=$(BIN.DIR)/eeprom
+FTDIEEPROM.BIN=$(BIN.DIR)/ftdi_eeprom
+FTDIEEPROM.CFG=$(SRC.FTDIEEPROM)/fx2.conf
 BUILD.FTDIEEPROM=$(BUILD.PREFIX).ftdi_eeprom
 SRC.FTDIEEPROM=$(BASE.DIR)/ftdi_eeprom
 SRC.DOCOPT=$(BASE.DIR)/docopt
@@ -24,6 +26,7 @@ SRC.FX2LIB=$(BASE.DIR)/fx2lib
 TARGET.INSTALLED=$(BASE.DIR)/target.installed
 SRC.GETTEXT=$(BASE.DIR)/gettext
 SRC.LIBCONFUSE=$(BASE.DIR)/libconfuse
+SRC.LIBUSB=$(BASE.DIR)/libusb
 
 #bootstrap: sdcc docopt hex2bix fx2lib
 
@@ -51,6 +54,9 @@ gettext: .FORCE
 libconfuse: .FORCE
 	cd $(SRC.LIBCONFUSE) && ./autogen.sh && ./configure --prefix=$(HOST.INSTALLED) && make -j8 install
 
+libusb: .FORCE
+	cd $(SRC.LIBUSB) && ./autogen.sh && ./configure  --prefix=$(HOST.INSTALLED) && make -j8 install
+
 
 libftdi: .FORCE
 	rm -rf $(BUILD.LIBFTDI) && mkdir $(BUILD.LIBFTDI) && cd $(BUILD.LIBFTDI) && $(CMAKE.BIN) $(SRC.LIBFTDI) -DCMAKE_INSTALL_PREFIX=$(HOST.INSTALLED) -DBUILD_TESTS=OFF -DDOCUMENTATION=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INCLUDE_PATH=$(HOST.INSTALLED)/include -DCMAKE_CROSSCOMPILING=ON -DLIBFTDI_ROOT_DIR=$(HOST.INSTALLED) -DCMAKE_LIBRARY_PATH=$(HOST.INSTALLED)/lib  && make install
@@ -60,7 +66,7 @@ eeprom: .FORCE
 
 
 run.eeprom: .FORCE
-	$(EEPROM.BIN) --version
+	LD_LIBRARY_PATH=$(HOST.INSTALLED)/lib $(FTDIEEPROM.BIN) --device i:0403:6015 --read-eeprom $(FTDIEEPROM.CFG)
 
 ftdi.eeprom: .FORCE
 	rm -rf $(BUILD.FTDIEEPROM) && mkdir $(BUILD.FTDIEEPROM) && cd $(BUILD.FTDIEEPROM) && $(CMAKE.BIN) $(SRC.FTDIEEPROM) -DCMAKE_INSTALL_PREFIX=$(HOST.INSTALLED) -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INCLUDE_PATH=$(HOST.INSTALLED)/include && make install
