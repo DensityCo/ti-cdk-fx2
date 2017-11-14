@@ -7,6 +7,9 @@
    <remote name="github"
            fetch="git://github.com" />
 
+   <remote name="gnu"
+           fetch="https://git.savannah.gnu.org" />
+
    <remote name="githubssh"
            fetch="ssh://git@github.com" />
 
@@ -22,4 +25,7 @@
    <project name="docopt/docopt.cpp"                         remote="github"      path="docopt"    clone-depth="1" revision="master" />
    <project name="makestuff/fx2tools"                        remote="github"      path="fx2tools"  revision="master" /> 
    <project name="libftdi"                                   remote="intranet"    path="libftdi"   revision="master" />
+   <project name="martinh/libconfuse"                        remote="github"      path="libconfuse" revision="refs/tags/v3.2.1" />
+   <project name="git/gettext.git"                           remote="gnu"         path="gettext"    revision="master" />
+
 </manifest>
