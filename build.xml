@@ -17,10 +17,14 @@
 <property name="docopt.dir"            value="${basedir}/docopt" />
 <property name="cycfx2.source.dir"     value="${basedir}/cycfx2prog-0.47" />
 <property name="cycfx2.install.dir"    value="${host.installed}/bin" />
+<property name="LASER_ON"    value="1" />
+<property name="LASER_OFF"    value="0" />
+
+
+
 
 <property environment="env"/>
 <property name="env.BUILD_NUMBER" value="dev"/>
-<property name="env.LASER_ON"    value="0" />
 
 <target name="clean">
 <delete dir="${host.installed}" />
@@ -99,25 +103,9 @@
 </target>
 
 
-
-<target name="firmware">
-<!--  <delete dir="${target.installed}" />
-  <mkdir  dir="${target.installed}/bin" /> -->
+<target name="firmware.safe.eeprom">
   <delete dir="${firmware.build.dir}" />
   <mkdir  dir="${firmware.build.dir}" />
-<!--
-<exec executable="make" dir="${firmware.source.dir}">
-  <env key="PATH"        value="${env.PATH}:${sdcc.install.dir}/bin" />
-  <env key="VERBOSE"     value="1" />
-  <arg value="clean" />
-</exec>
--->
-<!--
-<exec executable="make" dir="${firmware.source.dir}">
-  <arg value="clean" />
-  <env key="OUT_DIR"     value="${firmware.build.dir}" />
-</exec>
--->
 
 <exec executable="make" dir="${firmware.source.dir}" failonerror="true">
   <env key="PATH"        value="${env.PATH}:${sdcc.install.dir}/bin" />
@@ -127,12 +115,43 @@
   <env key="OUT_DIR"     value="${firmware.build.dir}" />
   <env key="HEX2BIX"     value="${hex2bix.bin}" />
   <env key="VERBOSE"     value="1" />
-  <env key="LASER_ON"     value="${env.LASER_ON}" />
+  <env key="LASER_ON"     value="${LASER_ON}" />
   <arg value="all" />
+</exec>
+
+<exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
+  <arg value="fx2_main.ihx" />
+  <arg value="fx2_firmware_v${version}_L${LASER_OFF}_B${env.BUILD_NUMBER}.ihx" />
+</exec>
+</target>
+
+
+
+<target name="firmware.ramload">
+  <delete dir="${firmware.build.dir}" />
+  <mkdir  dir="${firmware.build.dir}" />
+
+<exec executable="make" dir="${firmware.source.dir}" failonerror="true">
+  <env key="PATH"        value="${env.PATH}:${sdcc.install.dir}/bin" />
+  <env key="FX2_DIR"     value="${target.installed}" />
+  <env key="PROJ_DIR"    value="${firmware.source.dir}" />
+  <env key="FX2_INC_DIR" value="${fx2lib.include.dir}" />  
+  <env key="OUT_DIR"     value="${firmware.build.dir}" />
+  <env key="HEX2BIX"     value="${hex2bix.bin}" />
+  <env key="VERBOSE"     value="1" />
+  <env key="LASER_ON"     value="${LASER_ON}" />
+  <arg value="all" />
+</exec>
+
+<exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
+  <arg value="fx2_main.ihx" />
+  <arg value="fx2_firmware_v${version}_L${LASER_ON}_B${env.BUILD_NUMBER}.ihx" />
 </exec>
 
 
 </target>
+
+
 
 <target name="convert" >
 
@@ -198,13 +217,6 @@
 </target>
 -->
 <target name="bootstrap" depends="sdcc, docopt, hex2bix,fx2lib">
-</target>
-
-<target name="build" depends="firmware">
-<exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
-  <arg value="fx2_main.ihx" />
-  <arg value="fx2_firmware_v${version}_L${env.LASER_ON}_B${env.BUILD_NUMBER}.ihx" />
-</exec>
 </target>
 
 </project>
