@@ -66,6 +66,10 @@ class CypressFX2Device
                 int ProgramOpt9221BinFile(const char *path);
                 // Read number of bytes from the OPT9221 eeprom. mode indicates binary, or text output
                 int ReadProgramOpt9221(const char *path, unsigned int bytes, int mode);
+
+                // Read number of bytes from the FX2's program EEPROM
+                int ReadFX2Eeprom(const char *path, unsigned int bytes, int mode);
+
 		// Download/write a chunk of ram into the device. 
 		int WriteRAM(size_t addr,const unsigned char *data,size_t nbytes);
 		// Read a portion of ram from the device. 

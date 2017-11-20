@@ -152,9 +152,10 @@ static void PrintHelp()
 		"  reset          reset 8051 by putting reset low\n"
 		"  run            start the 8051 by putting reset high\n"
 		"  prg:FILE       program 8051; FILE is an Intel hex file (.ihx); will\n"
-                "  prg9221:FILE   program the OPT9221's EEPROM with a .tie birary file"
-                "  read9221:BYTES,MODE,FILE read number of bytes from the OPT9221 EEPROM and store in file as binary, or text"
-		"                 reset the 8051 before download; use \"run\" afterwards\n"
+                "                 reset the 8051 before download; use \"run\" afterwards\n"
+                "  prg9221:FILE   program the OPT9221's EEPROM with a .tie birary file\n"
+                "  read9221:BYTES,MODE,FILE read number of bytes from the OPT9221 EEPROM and store in file as binary, or text\n"
+                "  readfx2:BYTES,MODE,FILE read number of bytes from the FX2 EEPROM and store in file as binary, or text\n"
 		"  delay:NN       make a delay for NN msec\n"
 		"  set:ADR,VAL    set byte at address ADR to value VAL\n"
 		"  dram:ADR,LEN   dump RAM content: LEN bytes starting at ADR\n"
@@ -363,6 +364,26 @@ int main(int argc,char **arg)
                             ++errors;
                         }
                 }
+                else if(!strcmp(cmd,"readfx2"))
+                {
+                        long bytes = 0; // number of bytes to read from eeprom.
+                        int mode = 0; // 0 indicates binary output mode.
+
+                        if(a[0] && *a[0])  {  bytes=strtol(a[0],NULL,0);  }
+                        if(a[1] && *a[1])  {  mode=strtol(a[1],NULL,0);  }
+                        const char *file=a[2];
+
+                        if((file!=NULL) && (bytes > 0) && (mode >= 0) && (mode < 4))
+                        {
+                            fprintf(stderr,"Reading %ld bytes mode %d from the FX2 eeprom and placing in file %s\n",bytes, mode,file);
+                            errors+=cycfx2.ReadFX2Eeprom(file, bytes, mode);
+                        }
+                        else
+                        {
+                            fprintf(stderr,"Error - Bad command parameter\n");
+                            ++errors;
+                        }
+                }
 		else if(!strcmp(cmd,"delay"))
 		{
 			long delay=-1;
@@ -552,17 +573,43 @@ int main(int argc,char **arg)
                 else if(!strcmp(cmd,"ctrlw"))
                 {
                         int requesttype=0,request=0;
-                        int value=0,index=0;
-                        unsigned char byte[2]={0,0};
+                        int value=0,index=0, length =1;
+                        unsigned long data = 0;
+                        unsigned char byte[4]={0,0,0,0};
                         if(a[0] && *a[0]) requesttype=strtol(a[0],NULL,0);
                         if(a[1] && *a[1]) request=strtol(a[1],NULL,0);
                         if(a[2] && *a[2]) value=strtol(a[2],NULL,0);
                         if(a[3] && *a[3]) index=strtol(a[3],NULL,0);
-                        if(a[4] && *a[4]) byte[0]=(char)strtol(a[4],NULL,0);
+                        if(a[4] && *a[4]) data=strtoul(a[4],NULL,0);
+                        if(a[5] && *a[5]) length=strtol(a[5],NULL,0);
+
+                        switch (length)
+                        {
+                        case 2:
+                            byte[0] = (unsigned char)(data >> 8);
+                            byte[1] = (unsigned char)data;
+                            break;
+                        case 3:
+                            byte[0] = (unsigned char)(data >> 16);
+                            byte[1] = (unsigned char)(data >> 8);
+                            byte[2] = (unsigned char)data;
+                            break;
+                        case 4:
+                            byte[0] = (unsigned char)(data >> 24);
+                            byte[1] = (unsigned char)(data >> 16);
+                            byte[2] = (unsigned char)(data >> 8);
+                            byte[3] = (unsigned char)data;
+                            break;
+                        default:
+                            // Assume a lenght of one
+                            byte[0] = (unsigned char)data;
+                            break;
+                        }
+
                         fprintf(stderr,"Sending control message type 0x%02x, request "
                                 "0x%02x (value=%d,index=%d), data =0x%02x\n",
                                 requesttype,request,value,index, byte[0]);
-                        errors+=cycfx2.CtrlMsgW(requesttype,request,value,index,byte,1);
+                        errors+=cycfx2.CtrlMsgW(requesttype,request,value,index,byte,length);
                 }
                 else if(!strcmp(cmd,"ctrlr"))
                 {
