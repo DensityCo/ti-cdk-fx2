@@ -116,6 +116,14 @@ class CypressFX2Device
                 int CtrlMsgR(unsigned char requesttype,
                         unsigned char request,int value,int index,
                         const unsigned char *ctl_buf,size_t ctl_buf_size);
+
+                // Read the serial number stored in FX2 EEPROM
+                int SerialNumberRead(const unsigned char *ctl_buf,
+                        size_t ctl_buf_size);
+
+                // Write a serial number to the FX2 EEPROM
+                int SerialNumberWrite(const unsigned char *ctl_buf,
+                        size_t ctl_buf_size);
 };
 
 #endif  /* _CYCFX2PROG_CYCFX2DEVICE_ */

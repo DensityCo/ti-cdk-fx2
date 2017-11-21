@@ -914,6 +914,34 @@ int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mo
         return(n_errors ? -1 : 0);
 }
 
+int CypressFX2Device::SerialNumberRead(const unsigned char *ctl_buf, size_t ctl_buf_size)
+{
+        if(!IsOpen())
+        {  fprintf(stderr,"GetSerial: Not connected!\n");  return(1);  }
+
+        int rv=usb_control_msg(usbhdl,0xC0,0x32,0,0, (char*)ctl_buf,ctl_buf_size, /*timeout=*/1000/*msec*/);
+        if(rv<0)
+        {
+            fprintf(stderr,"Error reading serial number: %s\n", usb_strerror());
+        }
+
+        return(rv);
+}
+
+int CypressFX2Device::SerialNumberWrite(const unsigned char *ctl_buf, size_t ctl_buf_size)
+{
+        if(!IsOpen())
+        {  fprintf(stderr,"SetSerial: Not connected!\n");  return(1);  }
+
+        int rv=usb_control_msg(usbhdl,0x40,0x32,0,0, (char*)ctl_buf,ctl_buf_size, /*timeout=*/1000/*msec*/);
+        if(rv<0)
+        {
+            fprintf(stderr,"Error writing serial number: %s\n", usb_strerror());
+        }
+
+        return(rv);
+}
+
 int CypressFX2Device::CtrlMsg(unsigned char requesttype,
 	unsigned char request,int value,int index,
 	const unsigned char *ctl_buf,size_t ctl_buf_size)

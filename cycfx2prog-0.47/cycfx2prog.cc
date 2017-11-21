@@ -636,6 +636,45 @@ int main(int argc,char **arg)
                         }
                         fprintf(stderr,"\n");
                 }
+                else if(!strcmp(cmd,"getserial"))
+                {
+                        int length=0;
+                        unsigned char buffer[64];
+
+                        // Set to a known value so bad reads stick out
+                        for(int x = 0; x < 64; x++)
+                            buffer[x]=0xAA;
+
+                        length=cycfx2.SerialNumberRead(buffer,64);
+                        if(length > 0)
+                        {
+                            for(int x = 0; x < length; x++)
+                            {
+                                fprintf(stdout,"%c", buffer[x]);
+                            }
+                            fprintf(stdout,"\n");
+                        }
+                }
+                else if(!strcmp(cmd,"setserial"))
+                {
+                    // if a serial number string has been provided and no more than 32 characters
+                    if(a[0] && *a[0] && (strlen(a[0]) < 33))
+                    {
+                        fprintf(stderr,"Writing serial number %s\n", a[0]);
+
+                        unsigned int length = cycfx2.SerialNumberWrite((const unsigned char *)a[0],(size_t)strlen(a[0]));
+                        if(length != strlen(a[0]))
+                        {
+                            fprintf(stderr,"Error writing the serial number \n");
+                            ++errors;
+                        }
+                    }
+                    else
+                    {
+                        fprintf(stderr,"Error writing the serial number. Invalid command format.\n");
+                        ++errors;
+                    }
+                }
 		else
 		{
 			fprintf(stderr,"Ignoring unknown command \"%s\".\n",cmd);
