@@ -87,7 +87,7 @@
 </target>
 
 <target name="fx2lib">
-<exec executable="make" dir="${fx2lib.source.dir}">
+<exec executable="make" dir="${fx2lib.source.dir}" failonerror="true">
   <env key="PATH"  value="${env.PATH}:${sdcc.install.dir}/bin" />
   <arg value="all" />
 </exec>
