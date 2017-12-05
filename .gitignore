@@ -23,4 +23,4 @@ libftdi/
 build.eeprom/
 eeprom/
 build.ftdi_eeprom/
-
+verifyfirmware.tmp
