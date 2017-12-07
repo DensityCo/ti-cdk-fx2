@@ -806,6 +806,53 @@ int CypressFX2Device::ReadProgramOpt9221(const char *path, unsigned int bytes, i
         return(n_errors ? -1 : 0);
 }
 
+int CypressFX2Device::ProgramFx2BinFile(const char *path)
+{
+        if(!IsOpen())
+        {  fprintf(stderr,"Error - ProgramFx2File: Not connected!\n");  return(1);  }
+
+        int fd=::open(path,O_RDONLY);
+        if(fd<0)
+        {  fprintf(stderr,"Error - Failed to open %s: %s\n",path,strerror(errno));
+                return(2);  }
+
+        int n_errors=0, value = 0;
+        const size_t buflen=64;
+        unsigned char buf[buflen];
+        unsigned int startAddr = 0;
+
+        fprintf(stderr,"Programming the optFX2 EEPROM...\n");
+        while(!n_errors)
+        {
+                ssize_t rd=read(fd,buf,buflen);
+                if(!rd)  break;
+                if(rd<0)
+                {
+                        fprintf(stderr,"Reading %s: %s\n",path,strerror(errno));
+                        ::close(fd);  fd=-1;
+                        return(3);
+                }
+
+                value = (startAddr & 0xFFFF);
+                nanosleep((const struct timespec[]){{0, 1000000L}}, NULL);
+
+                // write the block of data to the eeprom
+                if (CtrlMsgW(0x40, 0x35, 0x0000 , value, buf, rd))
+                {
+                    ++n_errors;
+                }
+
+                startAddr = startAddr + rd;
+        }
+
+        if(fd>=0)
+        {  ::close(fd);  fd=-1;  }
+
+        fprintf(stderr,"  Wrote %d bytes\n",startAddr);
+
+        return(n_errors ? -1 : 0);
+}
+
 int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mode)
 {
 /* Reads from the OPT9221 eeprom. Mode = 0 means the data read from the eeprom
@@ -821,7 +868,7 @@ int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mo
         int n_errors=0, value = 0;
         const size_t buflen=64;
         unsigned char buf[buflen];
-        unsigned int startAddr = 0;
+        unsigned int startAddr = 0, bytes_to_write;
         FILE * fd = NULL;
 
         if(mode==1)
@@ -838,12 +885,21 @@ int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mo
                 return(2);
         }
 
-        while(startAddr < bytes)
+        while(bytes)
         {
             value = (startAddr & 0xFFFF);
 
+            if(bytes > buflen)
+            {
+                bytes_to_write = buflen;
+            }
+            else
+            {
+                bytes_to_write = bytes;
+            }
+
             // Read from the FX2's EEPROM
-            if(CtrlMsgR(0xC0, 0x07, 0, value, buf, buflen))
+            if(CtrlMsgR(0xC0, 0x07, 0, value, buf, bytes_to_write))
             {
                 ++n_errors;
             }
@@ -851,7 +907,7 @@ int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mo
 
             if(mode==1)
             {
-                for(size_t x = 0; x < buflen; x++)
+                for(size_t x = 0; x < bytes_to_write; x++)
                 {
                     fprintf(fd,"0x%02x ", buf[x]);
                     if((x==15) || (x==31) || (x==47))
@@ -863,9 +919,9 @@ int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mo
             }
             else
             {
-                int bytes_written = fwrite(buf, sizeof(char), buflen, fd);
+                unsigned int bytes_written = fwrite(buf, sizeof(char), bytes_to_write, fd);
 
-                if(bytes_written != buflen)
+                if(bytes_written != bytes_to_write)
                 {
                     ++n_errors;
                 }
@@ -878,6 +934,7 @@ int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mo
             }
 
             startAddr = startAddr + buflen;
+            bytes -= bytes_to_write;
         }
 
         if(mode!=2)

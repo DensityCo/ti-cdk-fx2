@@ -124,6 +124,8 @@ class CypressFX2Device
                 // Write a serial number to the FX2 EEPROM
                 int SerialNumberWrite(const unsigned char *ctl_buf,
                         size_t ctl_buf_size);
+                // Write a file to the FX2's eeprom
+                int ProgramFx2BinFile(const char *path);
 };
 
 #endif  /* _CYCFX2PROG_CYCFX2DEVICE_ */
