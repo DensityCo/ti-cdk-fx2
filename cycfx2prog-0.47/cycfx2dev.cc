@@ -806,6 +806,101 @@ int CypressFX2Device::ReadProgramOpt9221(const char *path, unsigned int bytes, i
         return(n_errors ? -1 : 0);
 }
 
+int CypressFX2Device::Dump9221Registers(const char *path, int mode)
+{
+/* Dumps the OPT9221 register contenets to a text file
+ */
+        unsigned char DE_register_map[] = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08
+                                          ,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x10,0x11
+                                          ,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x1a
+                                          ,0x1b,0x1f,0x25,0x27,0x28,0x29,0x2e,0x2f,0x30
+                                          ,0x31,0x33,0x35,0x36,0x37,0x38,0x39,0x3a,0x3b
+                                          ,0x3c,0x3d,0x3e,0x3f,0x40,0x47,0x48,0x4c,0x4d
+                                          ,0x51,0x52,0x61,0x62,0x63,0x65,0x66,0x80,0x81
+                                          ,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x91,0x92
+                                          ,0x93,0x94,0x95,0x96,0x97,0x98,0xab,0xac,0xad
+                                          ,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb6};
+
+        unsigned char TG_register_map[] = {0x02,0x0b,0x0c,0x0d,0x0e,0x0f,0x12,0x1f,0x20
+                                          ,0x21,0x22,0x80,0x81,0x82,0x83,0xcc,0xd6};
+
+
+        if(!IsOpen())
+        {  fprintf(stderr,"ReadFX2Eeprom: Not connected!\n");  return(1);  }
+
+        int n_errors=0;
+        const size_t buflen=64;
+        unsigned char buf[buflen];
+        FILE * fd = NULL;
+
+        if(mode==1)
+        {
+            fd = fopen(path,"w");
+            if(fd == NULL)
+            {  fprintf(stderr,"Failed to open %s: %s\n",path,strerror(errno));
+                    return(2);
+            }
+        }
+
+        // Read in the DE set of registers
+        for(int x=0; x < 88; ++x)
+        {
+            if(CtrlMsgR(0xC0, 0x08, 0x5c, DE_register_map[x], buf,3))
+            {
+                ++n_errors;
+            }
+
+            if(mode==1)
+            {
+                fprintf(fd,"0x5C%02x = 0x%02x%02x%02x\r\n ",(unsigned int)DE_register_map[x],(unsigned int)buf[2],(unsigned int)buf[1],(unsigned int)buf[0]);
+            }
+            else
+            {
+                printf("0x5C%02x = 0x%02x%02x%02x\r\n ",(unsigned int)DE_register_map[x],(unsigned int)buf[2],(unsigned int)buf[1],(unsigned int)buf[0]);
+            }
+
+            if(n_errors > 9 )
+            {
+                // Too many errors, let's get out of here.
+                break;
+            }
+
+
+        }
+
+        // Read in the TG set of registers
+        for(int x=0; x < 17; ++x)
+        {
+            if(CtrlMsgR(0xC0, 0x08, 0x58, TG_register_map[x], buf,3))
+            {
+                ++n_errors;
+            }
+
+            if(mode==1)
+            {
+                    fprintf(fd,"0x58%02x = 0x%02x%02x%02x\r\n ",(unsigned int)TG_register_map[x],(unsigned int)buf[2],(unsigned int)buf[1],(unsigned int)buf[0]);
+            }
+            else
+            {
+                    printf("0x58%02x = 0x%02x%02x%02x\r\n ",(unsigned int)TG_register_map[x],(unsigned int)buf[2],(unsigned int)buf[1],(unsigned int)buf[0]);
+            }
+
+            if(n_errors > 9 )
+            {
+                // Too many errors, let's get out of here.
+                break;
+            }
+
+
+        }
+
+
+        if(fd != NULL)
+        {  ::fclose(fd);  fd=NULL;  }
+
+        return(n_errors ? -1 : 0);
+}
+
 int CypressFX2Device::ProgramFx2BinFile(const char *path)
 {
         if(!IsOpen())
@@ -855,11 +950,9 @@ int CypressFX2Device::ProgramFx2BinFile(const char *path)
 
 int CypressFX2Device::ReadFX2Eeprom(const char *path, unsigned int bytes, int mode)
 {
-/* Reads from the OPT9221 eeprom. Mode = 0 means the data read from the eeprom
+/* Reads from the FX2 eeprom. Mode = 0 means the data read from the eeprom
  * is saved to a file in binary format. Mode = 1 means data read from the eeprom
- * is saved to a file in a human-readable text format. Mode = 2 means that data is
- * directly compared between a source file and the eeprom with an mismatches causing
- * this function to report an error.
+ * is saved to a file in a human-readable text format.
  */
 
         if(!IsOpen())

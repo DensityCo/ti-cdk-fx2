@@ -126,6 +126,8 @@ class CypressFX2Device
                         size_t ctl_buf_size);
                 // Write a file to the FX2's eeprom
                 int ProgramFx2BinFile(const char *path);
+                // Dump the 9221 register values
+                int Dump9221Registers(const char *path, int mode);
 };
 
 #endif  /* _CYCFX2PROG_CYCFX2DEVICE_ */

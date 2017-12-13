@@ -157,7 +157,8 @@ static void PrintHelp()
                 "  prg9221:FILE   program the OPT9221's EEPROM with a .tie birary file\n"
                 "  read9221:BYTES,MODE,FILE read number of bytes from the OPT9221 EEPROM and store in file as binary, or text\n"
                 "  readfx2:BYTES,MODE,FILE read number of bytes from the FX2 EEPROM and store in file as binary, or text\n"
-		"  delay:NN       make a delay for NN msec\n"
+                "  9221dump:MODE,FILE Dump all 9221 register contents to the screen Mode=0 , or file Mode=1\n"
+                "  delay:NN       make a delay for NN msec\n"
 		"  set:ADR,VAL    set byte at address ADR to value VAL\n"
 		"  dram:ADR,LEN   dump RAM content: LEN bytes starting at ADR\n"
 		"  dbulk:EP,L[,N] bulk read N (default: 1) buffers of size L from endpoint\n"
@@ -397,7 +398,30 @@ int main(int argc,char **arg)
                             ++errors;
                         }
                 }
-		else if(!strcmp(cmd,"delay"))
+                else if(!strcmp(cmd,"9221dump"))
+                {
+                        int mode = 0; // 0 indicates binary output mode, 1 text output
+
+                        if(a[0] && *a[0])  {  mode=strtol(a[0],NULL,0);  }
+                        const char *file=a[1];
+
+                        if(mode == 0)
+                        {
+                            fprintf(stderr,"Dumping the 9221 register contents\n");
+                            errors+=cycfx2.Dump9221Registers(NULL,mode);
+                        }
+                        else if((file!=NULL) && (mode == 1))
+                        {
+                            fprintf(stderr,"Dumping the 9221 register contents and placing in file %s\n",file);
+                            errors+=cycfx2.Dump9221Registers(file,mode);
+                        }
+                        else
+                        {
+                            fprintf(stderr,"Error - Bad command parameter\n");
+                            ++errors;
+                        }
+                }
+                else if(!strcmp(cmd,"delay"))
 		{
 			long delay=-1;
 			if(a[0] && *a[0])
