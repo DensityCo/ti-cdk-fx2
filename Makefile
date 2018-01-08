@@ -27,6 +27,8 @@ TARGET.INSTALLED=$(BASE.DIR)/target.installed
 SRC.GETTEXT=$(BASE.DIR)/gettext
 SRC.LIBCONFUSE=$(BASE.DIR)/libconfuse
 SRC.LIBUSB=$(BASE.DIR)/libusb
+SRC.I2C=$(BASE.DIR)/ftdi-i2c
+BUILD.I2C=$(BUILD.PREFIX).ftdi-i2c
 
 #bootstrap: sdcc docopt hex2bix fx2lib
 
@@ -56,6 +58,10 @@ libconfuse: .FORCE
 
 libusb: .FORCE
 	cd $(SRC.LIBUSB) && ./autogen.sh && ./configure  --prefix=$(HOST.INSTALLED) && make -j8 install
+
+i2c: .FORCE
+	rm -rf $(BUILD.I2C) && mkdir $(BUILD.I2C) && cd $(BUILD.I2C) && $(CMAKE.BIN) $(SRC.I2C) -DCMAKE_INSTALL_PREFIX=$(HOST.INSTALLED) -DBUILD_TESTS=OFF -DDOCUMENTATION=OFF -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INCLUDE_PATH=$(HOST.INSTALLED)/include -DCMAKE_CROSSCOMPILING=ON -DLIBFTDI_ROOT_DIR=$(HOST.INSTALLED) -DCMAKE_LIBRARY_PATH=$(HOST.INSTALLED)/lib  && make install
+
 
 
 libftdi: .FORCE
