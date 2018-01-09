@@ -24,3 +24,5 @@ build.eeprom/
 eeprom/
 build.ftdi_eeprom/
 verifyfirmware.tmp
+gettext/
+libconfuse/
