@@ -153,8 +153,8 @@ static void PrintHelp()
 		"  run            start the 8051 by putting reset high\n"
 		"  prg:FILE       program 8051; FILE is an Intel hex file (.ihx); will\n"
                 "                 reset the 8051 before download; use \"run\" afterwards\n"
-                "  prgFX2:FILE    program the FX2's EEPROM with a .iic birary file\n"
-                "  prg9221:FILE   program the OPT9221's EEPROM with a .tie birary file\n"
+                "  prgFX2:FILE    program the FX2's EEPROM with a .iic binary file\n"
+                "  prg9221:FILE   program the OPT9221's EEPROM with a .tie binary file\n"
                 "  read9221:BYTES,MODE,FILE read number of bytes from the OPT9221 EEPROM and store in file as binary, or text\n"
                 "  readfx2:BYTES,MODE,FILE read number of bytes from the FX2 EEPROM and store in file as binary, or text\n"
                 "  9221dump:MODE,FILE Dump all 9221 register contents to the screen Mode=0 , or file Mode=1\n"
@@ -721,6 +721,6 @@ int main(int argc,char **arg)
 		if(cmd)
 		{  free(cmd);  cmd=NULL;  }
 	}
-	
+        cycfx2.close();
 	return(errors ? 1 : 0);
 }

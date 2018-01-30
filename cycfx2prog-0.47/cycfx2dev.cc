@@ -669,7 +669,7 @@ int CypressFX2Device::ProgramOpt9221BinFile(const char *path)
             }
             else
             {
-                fprintf(stderr,"  EEPROM and source match.\nProgramming opertion was successfull.\n");
+                fprintf(stderr,"  EEPROM and source match.\nProgramming operation was successful.\n");
             }
         }
 
