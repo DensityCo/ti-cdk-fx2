@@ -1069,6 +1069,150 @@ int CypressFX2Device::SerialNumberWrite(const unsigned char *ctl_buf, size_t ctl
         return(rv);
 }
 
+int CypressFX2Device::OrionSerialNumberRead(const unsigned char *ctl_buf, size_t ctl_buf_size)
+{
+        // Serial number format is 1 byte length, 1 to 64 bytes serial
+        // number value (ASCII), 2 bytes CRC-16 CCITT
+
+        int length = 0;
+        unsigned int address = 0;
+        unsigned short stored_checksum = 0xFFFF;
+
+        if(!IsOpen())
+        {  fprintf(stderr,"GetSerial: Not connected!\n");  return(1);  }
+
+        // Get the serial number length
+        int bytes_read = usb_control_msg(usbhdl,0xC0,0x04,0x5200,0, (char*)&length,1, /*timeout=*/1000/*msec*/);
+        if(bytes_read != 1)
+        {
+            fprintf(stderr,"Error: Reading serial number length!\n");
+            return(-1);
+        }
+        ++address;
+
+        // Limit the maximum length in the case of an unprogrammed board
+        if(length > 64)
+        {
+            length = 64;
+        }
+        // Make sure we don't exceed the supplied buffer
+        if(length > (int)ctl_buf_size)
+        {
+            return(-1);
+        }
+
+        // Read the serial number from EEPROM
+        for(int x = 0; x < length; ++x)
+        {
+            // Only one byte reads are supported by the TI FX2 firmware for this type of EEPROM
+            // address format is LSBMSB
+            bytes_read = usb_control_msg(usbhdl,0xC0,0x04,0x5200,address << 8, (char*)&ctl_buf[x],1, /*timeout=*/1000/*msec*/);
+            if(bytes_read != 1)
+            {
+                fprintf(stderr,"Error: Reading serial number value!\n");
+                return(-1);
+            }
+            ++address;
+        }
+        // Read in the 2-byte CRC
+        char * b_stored_checksum = (char *)&stored_checksum;
+        for(unsigned int x = 0; x < 2; ++x)
+        {
+            bytes_read = usb_control_msg(usbhdl,0xC0,0x04,0x5200,address << 8, &b_stored_checksum[x],1, /*timeout=*/1000/*msec*/);
+            if(bytes_read != 1)
+            {
+                fprintf(stderr,"Error: Reading the stored checksum!\n");
+                return(-1);
+            }
+            ++address;
+        }
+
+        // Check the CRC calculated vs read from EEPROM
+        unsigned short read_checksum = Computecrc16(ctl_buf, length);
+        if(stored_checksum != read_checksum)
+        {
+            fprintf(stderr,"Error: Checksums do not match %X read vs %X stored!\n", stored_checksum, read_checksum);
+            return(-1);
+        }
+
+        return(length);
+}
+
+int CypressFX2Device::OrionSerialNumberWrite(const unsigned char *ctl_buf, size_t ctl_buf_size)
+{
+        // Serial number format is 1 byte length, 1 to 64 bytes serial
+        // number value (ASCII), 2 bytes CRC-16 CCITT
+
+        int length = (int)ctl_buf_size;
+        int x = 0;
+        unsigned int address = 0;
+        unsigned short checksum = 0;
+
+        if(!IsOpen())
+        {  fprintf(stderr,"SetSerial: Not connected!\n");  return(1);  }
+
+        // Write the serial number length
+        int bytes_written = usb_control_msg(usbhdl,0x40,0x03,0x5200,0, (char*)&length,1, /*timeout=*/1000/*msec*/);
+        if(bytes_written != 1)
+        {
+            fprintf(stderr,"Error: Writing the serial number length!\n");
+            return(-1);
+        }
+        // Sleep to allow the write to EEPROM time to complete
+        nanosleep((const struct timespec[]){{0, 10000000L}}, NULL);
+        ++address;
+
+        if(length>64)
+            length = 64;
+
+        bytes_written = 0;
+
+        for(x = 0; x < length; x++)
+        {
+            // Only one byte writes are supported by the TI FX2 firmware for this type of EEPROM
+            bytes_written += usb_control_msg(usbhdl,0x40,0x03,0x5200, address << 8, (char*)&ctl_buf[x],1, /*timeout=*/1000/*msec*/);
+            nanosleep((const struct timespec[]){{0, 10000000L}}, NULL);
+            ++address;
+        }
+
+        if(bytes_written != length)
+        {
+            fprintf(stderr,"Error: Writing the serial number value %d bytes written!\n", bytes_written);
+            return(-1);
+        }
+
+        // Use a crc16 CCITT checksum method to generate a 2 byte CRC
+        checksum = Computecrc16(ctl_buf, length);
+        char b_checksum[2];
+        b_checksum[0] = (char) (checksum & 0xFF);
+        b_checksum[1] = (char) ((checksum >> 8) & 0xFF);
+
+        // write the two byte checksum
+        usb_control_msg(usbhdl,0x40,0x03,0x5200, address << 8, &b_checksum[0],1, /*timeout=*/1000/*msec*/);
+        nanosleep((const struct timespec[]){{0, 10000000L}}, NULL);
+        ++address;
+        usb_control_msg(usbhdl,0x40,0x03,0x5200, address << 8, &b_checksum[1],1, /*timeout=*/1000/*msec*/);
+        nanosleep((const struct timespec[]){{0, 10000000L}}, NULL);
+
+        return(bytes_written);
+}
+
+unsigned short CypressFX2Device::Computecrc16(const unsigned char* data_p, unsigned char length)
+{
+        // Computes a CRC-16 CCITT 0xFFFF
+        // Values generated can be checked at https://www.lammertbies.nl/comm/info/crc-calculation.html
+        unsigned char x;
+        unsigned short crc = 0xFFFF;
+
+        while (length--){
+            x = crc >> 8 ^ *data_p++;
+            x ^= x>>4;
+            crc = (crc << 8) ^ ((unsigned short)(x << 12)) ^ ((unsigned short)(x <<5)) ^ ((unsigned short)x);
+        }
+
+        return crc;
+}
+
 int CypressFX2Device::CtrlMsg(unsigned char requesttype,
 	unsigned char request,int value,int index,
 	const unsigned char *ctl_buf,size_t ctl_buf_size)

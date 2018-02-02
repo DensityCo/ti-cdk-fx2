@@ -158,6 +158,10 @@ static void PrintHelp()
                 "  read9221:BYTES,MODE,FILE read number of bytes from the OPT9221 EEPROM and store in file as binary, or text\n"
                 "  readfx2:BYTES,MODE,FILE read number of bytes from the FX2 EEPROM and store in file as binary, or text\n"
                 "  9221dump:MODE,FILE Dump all 9221 register contents to the screen Mode=0 , or file Mode=1\n"
+                "  getserial      Read the serial number from the Hubble board's EEPROM\n"
+                "  setserial:SERIAL_NUMBER Program a serial number into the Hubble board's EEPROM\n"
+                "  getorionserial Read the serial number from the Orion board's EEPROM\n"
+                "  setorionserial:SERIAL_NUMBER Program a serial number into the Orion board's EEPROM\n"
                 "  delay:NN       make a delay for NN msec\n"
 		"  set:ADR,VAL    set byte at address ADR to value VAL\n"
 		"  dram:ADR,LEN   dump RAM content: LEN bytes starting at ADR\n"
@@ -712,7 +716,50 @@ int main(int argc,char **arg)
                         ++errors;
                     }
                 }
-		else
+                else if(!strcmp(cmd,"getorionserial"))
+                {
+                        int length=0;
+                        unsigned char buffer[64];
+
+                        // Set to a known value so bad reads stick out
+                        for(int x = 0; x < 64; x++)
+                            buffer[x]=0xAA;
+
+                        length=cycfx2.OrionSerialNumberRead(buffer,64);
+                        if(length > 0)
+                        {
+                            for(int x = 0; x < length; x++)
+                            {
+                                fprintf(stdout,"%c", buffer[x]);
+                            }
+                            fprintf(stdout,"\n");
+                        }
+                        else
+                        {
+                             ++errors;
+                        }
+                }
+                else if(!strcmp(cmd,"setorionserial"))
+                {
+                    // if a serial number string has been provided and no more than 32 characters
+                    if(a[0] && *a[0] && (strlen(a[0]) < 33))
+                    {
+                        fprintf(stderr,"Writing serial number %s\n", a[0]);
+
+                        unsigned int length = cycfx2.OrionSerialNumberWrite((const unsigned char *)a[0],(size_t)strlen(a[0]));
+                        if(length != strlen(a[0]))
+                        {
+                            fprintf(stderr,"Error writing the serial number \n");
+                            ++errors;
+                        }
+                    }
+                    else
+                    {
+                        fprintf(stderr,"Error writing the serial number. Invalid command format.\n");
+                        ++errors;
+                    }
+                }
+                else
 		{
 			fprintf(stderr,"Ignoring unknown command \"%s\".\n",cmd);
 			++errors;
