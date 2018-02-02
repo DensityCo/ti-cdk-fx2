@@ -36,7 +36,6 @@ class CypressFX2Device
 		int _ProgramIHexLine(const char *buf,const char *path,int line);
                 // Internally used to calculate a serial number's checksum
                 unsigned short Computecrc16(const unsigned char* data_p, unsigned char length);
-	private:
 		CypressFX2Device(const CypressFX2Device &);
 		void operator=(const CypressFX2Device &);
 	public:
