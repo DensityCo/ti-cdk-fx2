@@ -126,7 +126,7 @@ class CypressFX2Device
                 int SerialNumberWrite(const unsigned char *ctl_buf,
                         size_t ctl_buf_size);
                 // Read the serial number from the Orion board
-                int OrionSerialNumberRead(const unsigned char *ctl_buf,
+                int OrionSerialNumberRead(unsigned char *ctl_buf,
                         size_t ctl_buf_size);
                 // Write a serial number to the Orion board
                 int OrionSerialNumberWrite(const unsigned char *ctl_buf,

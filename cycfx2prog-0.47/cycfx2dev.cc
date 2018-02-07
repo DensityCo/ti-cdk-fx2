@@ -1069,7 +1069,7 @@ int CypressFX2Device::SerialNumberWrite(const unsigned char *ctl_buf, size_t ctl
         return(rv);
 }
 
-int CypressFX2Device::OrionSerialNumberRead(const unsigned char *ctl_buf, size_t ctl_buf_size)
+int CypressFX2Device::OrionSerialNumberRead(unsigned char *ctl_buf, size_t ctl_buf_size)
 {
         // Serial number format is 1 byte length, 1 to 64 bytes serial
         // number value (ASCII), 2 bytes CRC-16 CCITT

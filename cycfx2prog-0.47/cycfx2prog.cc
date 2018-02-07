@@ -742,7 +742,7 @@ int main(int argc,char **arg)
                 else if(!strcmp(cmd,"setorionserial"))
                 {
                     // if a serial number string has been provided and no more than 32 characters
-                    if(a[0] && *a[0] && (strlen(a[0]) < 33))
+                    if(a[0] && *a[0] && (strlen(a[0]) < 65))
                     {
                         fprintf(stderr,"Writing serial number %s\n", a[0]);
 
