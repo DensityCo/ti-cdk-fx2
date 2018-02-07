@@ -34,7 +34,8 @@ class CypressFX2Device
 		// Internally used: Program one line of an Intel HEX file. 
 		// The arguments path and line are just needed for error reporting. 
 		int _ProgramIHexLine(const char *buf,const char *path,int line);
-	private:
+                // Internally used to calculate a serial number's checksum
+                unsigned short Computecrc16(const unsigned char* data_p, unsigned char length);
 		CypressFX2Device(const CypressFX2Device &);
 		void operator=(const CypressFX2Device &);
 	public:
@@ -123,6 +124,12 @@ class CypressFX2Device
 
                 // Write a serial number to the FX2 EEPROM
                 int SerialNumberWrite(const unsigned char *ctl_buf,
+                        size_t ctl_buf_size);
+                // Read the serial number from the Orion board
+                int OrionSerialNumberRead(unsigned char *ctl_buf,
+                        size_t ctl_buf_size);
+                // Write a serial number to the Orion board
+                int OrionSerialNumberWrite(const unsigned char *ctl_buf,
                         size_t ctl_buf_size);
                 // Write a file to the FX2's eeprom
                 int ProgramFx2BinFile(const char *path);
