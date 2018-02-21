@@ -119,7 +119,7 @@
   <arg value="all" />
 </exec>
 
-<exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
+<exec executable="cp" dir="${firmware.build.dir}" failonerror="true">
   <arg value="fx2_main.ihx" />
   <arg value="fx2_firmware_v${version}_L${LASER_OFF}_B${env.BUILD_NUMBER}.ihx" />
 </exec>
@@ -143,7 +143,7 @@
   <arg value="all" />
 </exec>
 
-<exec executable="mv" dir="${firmware.build.dir}" failonerror="true">
+<exec executable="cp" dir="${firmware.build.dir}" failonerror="true">
   <arg value="fx2_main.ihx" />
   <arg value="fx2_firmware_v${version}_L${LASER_ON}_B${env.BUILD_NUMBER}.ihx" />
 </exec>
@@ -193,6 +193,7 @@
 <target name="load" >
 
 <exec executable="${cycfx2.install.dir}/cycfx2prog" dir="${firmware.build.dir}" failonerror="true">
+  <arg value="-id=0451.9105" />
   <arg value="prg:fx2_main.ihx" />
   <arg value="run" />
 </exec>

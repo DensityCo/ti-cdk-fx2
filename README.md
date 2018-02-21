@@ -33,14 +33,25 @@ ant bootstrap
 ```
 
 # Build FX2LIB Reference Firmware
+To build the fully functional ram-loadable version of the FX2 firmware run the following build command.
 ```bash
-ant build
+ant firmware.ramload
 ```
 
+To build an eye-safe version of the FX2 firmware for uncalibrated TOF modules, run the following build command.
+```bash
+ant firmware.safe.eeprom
+```
+
+The resulting FX2 image will be placed under the directory build.firmware
+
 # Build the FX2 Loader
+The FX2 loader is used to load and run a FX2 image from the FX2 USB controller's RAM. This is useful for testing purposes. To build the cycfx2prog loader... 
 ```bash
 ant build_loader
 ```
+
+The resulting host executable binary is located under the directory host.installed/bin
 
 # Load the Firmware Onto FX2 Development Kit
 Note that this step requires updated udev rules.
