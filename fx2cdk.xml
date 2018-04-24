@@ -15,13 +15,13 @@
 
    <default remote="githubssh" sync-j="8" />
 
-<project name="DensityCo/emb.prebuilt.fx2"             remote="githubssh"   path="prebuilts/fx2" revision="master" upstream="master" />
+<project name="DensityCo/emb.prebuilt.fx2"             remote="githubssh"   path="prebuilts/fx2" revision="trunk" upstream="trunk" />
    <project name="DensityCo/emb.prebuilt.opt9221firmware"             remote="githubssh"   path="prebuilts/9221" revision="trunk" upstream="trunk" />
-   <project name="DensityCo/fx2-reference-firmware"          remote="githubssh"   path="firmware"  revision="master" upstream="master" />
-   <project name="DensityCo/ti-cdk-fx2"                      remote="githubssh"   path="."         revision="master" upstream="master" />
+   <project name="DensityCo/fx2-reference-firmware"          remote="githubssh"   path="firmware"  revision="trunk" upstream="trunk" />
+   <project name="DensityCo/ti-cdk-fx2"                      remote="githubssh"   path="."         revision="trunk" upstream="trunk" />
    <project name="DensityCo/sdcc"                            remote="github"      path="sdcc"      revision="refs/tags/sdcc-3.6.0" />
    <project name="caseykelso/hex2bix"                        remote="github"      path="hex2bix"   revision="master" />
-   <project name="DensityCo/fx2lib.git"                      remote="github"      path="fx2lib"    revision="master" />
+   <project name="DensityCo/fx2lib.git"                      remote="github"      path="fx2lib"    revision="trunk" />
    <project name="docopt/docopt.cpp"                         remote="github"      path="docopt"    clone-depth="1" revision="master" />
    <project name="makestuff/fx2tools"                        remote="github"      path="fx2tools"  revision="master" /> 
    <project name="libftdi"                                   remote="intranet"    path="libftdi"   revision="master" />
