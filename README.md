@@ -45,16 +45,17 @@ ant firmware.safe.eeprom
 
 The resulting FX2 image will be placed under the directory build.firmware
 
-# Build the FX2 Loader
-The FX2 loader is used to load and run a FX2 image from the FX2 USB controller's RAM. This is useful for testing purposes. To build the cycfx2prog loader... 
-```bash
-ant build_loader
-```
-
 The resulting host executable binary is located under the directory host.installed/bin
 
 # Load the Firmware Onto FX2 Development Kit
 Note that this step requires updated udev rules.
 ```bash
-ant load
+make flash.fx2.density
+```
+
+# Push up your changes
+```bash
+git add files
+git commit
+git push githubssh HEAD:yourbranch
 ```
