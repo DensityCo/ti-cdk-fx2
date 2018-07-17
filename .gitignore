@@ -26,3 +26,4 @@ build.ftdi_eeprom/
 verifyfirmware.tmp
 gettext/
 libconfuse/
+ftdi-i2c/

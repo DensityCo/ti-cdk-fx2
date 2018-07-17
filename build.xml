@@ -217,7 +217,7 @@
 </exec>
 </target>
 -->
-<target name="bootstrap" depends="sdcc, docopt, hex2bix,fx2lib">
+<target name="bootstrap" depends="sdcc, docopt, hex2bix,fx2lib,build_loader">
 </target>
 
 </project>
