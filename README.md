@@ -23,7 +23,7 @@ TBD
 
 # Get the source
 ```bash
-repo init -m fx2cdk.xml -u git://github.com/DensityCo/ti-cdk-fx2.git -b trunk
+repo init -m fx2cdk.xml -u git://github.com/DensityCo/ti-cdk-fx2.git -b DEN-5036
 repo sync
 ```
 
