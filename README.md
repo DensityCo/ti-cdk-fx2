@@ -32,12 +32,13 @@ repo sync
 ant bootstrap
 ```
 
-# Build FX2LIB Reference Firmware
+# Build Firmware for Dev purposes
 To build the fully functional ram-loadable version of the FX2 firmware run the following build command.
 ```bash
 ant firmware.ramload
 ```
 
+# Build Firmware for Release
 To build an eye-safe version of the FX2 firmware for uncalibrated TOF modules, run the following build command.
 ```bash
 ant firmware.safe.eeprom
