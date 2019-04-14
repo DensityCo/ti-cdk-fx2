@@ -39,7 +39,7 @@ fx2lib: .FORCE
 	cd $(SRC.FX2LIB)/fw && PATH=$(PATH):$(SDCC.INSTALLED)/bin make all && cp $(SRC.FX2LIB)/lib/fx2.lib $(TARGET.INSTALLED)/lib
 
 flash.fx2.ti17: .FORCE
-	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 reset prg:$(FX2.TI.V17.FIRMWARE.BIN) run
+	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 prgfx2bin:$(FX2.TI.V17.FIRMWARE.BIN) run
 
 flash.fx2.density: .FORCE
 	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 reset prg:$(FIRMWARE.BIN) run

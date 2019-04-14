@@ -151,6 +151,7 @@ static void PrintHelp()
 		"Commands: Must be specified after all options.\n"
 		"  reset          reset 8051 by putting reset low\n"
 		"  run            start the 8051 by putting reset high\n"
+                "  prgfx2bin:FILE program 8051; FILE is an .iic or .bin file"
 		"  prg:FILE       program 8051; FILE is an Intel hex file (.ihx); will\n"
                 "                 reset the 8051 before download; use \"run\" afterwards\n"
                 "  prg9221:FILE   program the OPT9221's EEPROM with a .tie birary file\n"
@@ -315,6 +316,23 @@ int main(int argc,char **arg)
 			fprintf(stderr,"Putting 8051 out of reset.\n");
 			errors+=cycfx2.FX2Reset(/*running=*/1);
 		}
+                else if(!strcmp(cmd,"prgfx2bin"))
+                {
+			// NOTE: We put the 8051 into reset prior to downloading but 
+			//       we won't put it out of reset afterwards. 
+			fprintf(stderr,"Putting 8051 into reset.\n");
+			errors+=cycfx2.FX2Reset(/*running=*/0);
+			
+			const char *file=a[0];
+			if(!file)
+			{  fprintf(stderr,"Command \"dl\" requires file to download.\n");
+				++errors;  }
+			else
+			{
+				fprintf(stderr,"Programming 8051 EEPROM using binary \"%s\".\n",file);
+				errors+=cycfx2.ProgramBinFile(file,0x0);
+			}
+                }
 		else if(!strcmp(cmd,"prg"))
 		{
 			// NOTE: We put the 8051 into reset prior to downloading but 
