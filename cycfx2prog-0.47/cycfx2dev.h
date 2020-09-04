@@ -54,7 +54,8 @@ class CypressFX2Device
 		
 		// Close device. Returns 0 on success. Errors written to stderr. 
 		int close();
-		
+	
+        int EraseEEPROM();    
 		// Read an intel hex file and download it. 
 		// Returns 0 on success; 1 on error. Errors written to stderr. 
 		int ProgramIHexFile(const char *path);

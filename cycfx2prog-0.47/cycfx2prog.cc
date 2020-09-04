@@ -151,6 +151,7 @@ static void PrintHelp()
 		"Commands: Must be specified after all options.\n"
 		"  reset          reset 8051 by putting reset low\n"
 		"  run            start the 8051 by putting reset high\n"
+        "  erase          erase the attached EEPROM\n"
 		"  prg:FILE       program 8051; FILE is an Intel hex file (.ihx); will\n"
                 "                 reset the 8051 before download; use \"run\" afterwards\n"
                 "  prgFX2:FILE    program the FX2's EEPROM with a .iic binary file\n"
@@ -310,12 +311,18 @@ int main(int argc,char **arg)
 		{  printf(" <%s>",a[j]);  }
 		printf("\n");
 #endif
-		
+	
+           
 		if(!strcmp(cmd,"reset"))
 		{
 			fprintf(stderr,"Putting 8051 into reset.\n");
 			errors+=cycfx2.FX2Reset(/*running=*/0);
 		}
+        else if(!strcmp(cmd, "erase"))
+        {
+            fprintf(stderr,"Erasing attached EEPROM.\n");
+            errors+=cycfx2.EraseEEPROM();
+        }
 		else if(!strcmp(cmd,"run"))
 		{
 			fprintf(stderr,"Putting 8051 out of reset.\n");

@@ -373,6 +373,36 @@ int CypressFX2Device::ReadRAM(size_t addr,unsigned char *data,size_t nbytes)
 }
 
 
+int CypressFX2Device::EraseEEPROM()
+{
+    const uint32_t nbytes = 4096;
+    uint32_t       addr   = 0;
+    int            result = 0;
+
+    unsigned char data[nbytes];
+
+    // fill buffer of 4k
+    for (uint32_t i = 0; i < nbytes; ++i)
+    {
+        data[i] = 0xFF;
+    }
+
+    // write the buffer to flash
+    if(WriteRAM(addr,data,nbytes))
+    {  
+        result = 1; // error
+        fprintf(stderr,"failed to erase.\n");
+    }
+    else
+    {
+        fprintf(stderr,"success erasing eeprom\n");
+    }
+
+	return result;
+}
+
+
+
 int CypressFX2Device::_ProgramIHexLine(const char *buf,
 	const char *path,int line)
 {

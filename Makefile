@@ -48,6 +48,9 @@ fx2lib: .FORCE
 flash.fx2.ti17: .FORCE
 	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 reset prg:$(FX2.TI.V17.FIRMWARE.BIN) run
 
+erase.eeprom: .FORCE
+	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 reset erase run
+
 flash.fx2.density: .FORCE
 	sudo $(FX2PROGRAMMER.BIN) -id=0451.9105 reset prg:$(FIRMWARE.BIN) run
 
